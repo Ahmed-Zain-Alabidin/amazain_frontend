@@ -102,13 +102,13 @@ export default function ProductPage() {
         <div className="min-h-screen bg-white flex flex-col font-sans">
             <Navbar />
             
-            <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-                <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+            <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12 w-full">
+                <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
                     
                     {/* Image Gallery (Left) */}
                     <div className="w-full lg:w-1/2 flex flex-col">
                         {/* Main Image */}
-                        <div className="aspect-square bg-gray-50 rounded-3xl overflow-hidden mb-4 border border-gray-100 shadow-sm relative group">
+                        <div className="aspect-square bg-gray-50 rounded-2xl lg:rounded-3xl overflow-hidden mb-3 md:mb-4 border border-gray-100 shadow-sm relative group">
                             <img 
                                 src={images[selectedImage]} 
                                 alt={product.name} 
@@ -116,12 +116,12 @@ export default function ProductPage() {
                             />
                         </div>
                         {/* Thumbnails */}
-                        <div className="flex space-x-4 overflow-x-auto pb-2">
+                        <div className="flex space-x-2 md:space-x-4 overflow-x-auto pb-2 scrollbar-hide">
                             {images.map((img, idx) => (
                                 <button 
                                     key={idx}
                                     onClick={() => setSelectedImage(idx)}
-                                    className={`flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden border-2 transition-all ${
+                                    className={`flex-shrink-0 w-16 h-16 md:w-24 md:h-24 rounded-xl md:rounded-2xl overflow-hidden border-2 transition-all ${
                                         selectedImage === idx ? 'border-black scale-105 shadow-sm' : 'border-transparent hover:border-gray-300 opacity-70 hover:opacity-100'
                                     }`}
                                 >
@@ -133,47 +133,47 @@ export default function ProductPage() {
 
                     {/* Product Info (Right) */}
                     <div className="w-full lg:w-1/2 flex flex-col pt-2 lg:pt-8">
-                        <p className="text-sm font-bold tracking-widest text-blue-600 uppercase mb-3">
+                        <p className="text-xs md:text-sm font-bold tracking-widest text-blue-600 uppercase mb-2 md:mb-3">
                             {product.category?.name || 'Category'}
                         </p>
-                        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-3 md:mb-4 leading-tight">
                             {product.name}
                         </h1>
                         
                         {/* Ratings */}
-                        <div className="flex items-center space-x-4 mb-6">
+                        <div className="flex items-center space-x-3 md:space-x-4 mb-4 md:mb-6">
                             <div className="flex items-center">
                                 {[...Array(5)].map((_, i) => (
                                     <Star 
                                         key={i} 
-                                        className={`w-5 h-5 ${i < Math.round(product.ratings?.average || 0) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200'}`} 
+                                        className={`w-4 h-4 md:w-5 md:h-5 ${i < Math.round(product.ratings?.average || 0) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200'}`} 
                                     />
                                 ))}
                             </div>
-                            <span className="text-sm font-semibold text-gray-500">
+                            <span className="text-xs md:text-sm font-semibold text-gray-500">
                                 {product.ratings?.average || 0} ({product.ratings?.count || 0} reviews)
                             </span>
                         </div>
 
                         {/* Price */}
-                        <div className="mb-8">
-                            <div className="flex items-baseline gap-3">
-                                <p className="text-3xl md:text-4xl font-extrabold text-gray-900">
+                        <div className="mb-6 md:mb-8">
+                            <div className="flex flex-wrap items-baseline gap-2 md:gap-3">
+                                <p className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900">
                                     {product.currency === 'USD' ? '$' : 'EGP '}{product.price}
                                 </p>
                                 {product.originalPrice && product.originalPrice > product.price && (
                                     <>
-                                        <p className="text-xl font-semibold text-gray-400 line-through">
+                                        <p className="text-lg md:text-xl font-semibold text-gray-400 line-through">
                                             {product.currency === 'USD' ? '$' : 'EGP '}{product.originalPrice}
                                         </p>
-                                        <span className="text-sm font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full">
+                                        <span className="text-xs md:text-sm font-bold text-green-600 bg-green-50 px-2 md:px-3 py-1 rounded-full">
                                             Save {product.discountPercentage}%
                                         </span>
                                     </>
                                 )}
                             </div>
                             {product.originalPrice && product.originalPrice > product.price && (
-                                <p className="text-sm text-green-600 font-medium mt-2">
+                                <p className="text-xs md:text-sm text-green-600 font-medium mt-2">
                                     You save {product.currency === 'USD' ? '$' : 'EGP '}
                                     {(product.originalPrice - product.price).toFixed(2)}
                                 </p>
@@ -181,24 +181,24 @@ export default function ProductPage() {
                         </div>
                         
                         {/* Description */}
-                        <div className="mb-8">
-                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-3">Description</h3>
-                            <p className="text-gray-600 leading-relaxed text-base md:text-lg">
+                        <div className="mb-6 md:mb-8">
+                            <h3 className="text-xs md:text-sm font-bold text-gray-900 uppercase tracking-wider mb-2 md:mb-3">Description</h3>
+                            <p className="text-gray-600 leading-relaxed text-sm md:text-base lg:text-lg">
                                 {product.description}
                             </p>
                         </div>
 
                         {/* Stock Status */}
-                        <div className="mb-10">
-                            <div className="flex items-center space-x-2">
-                                <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold tracking-wide ${
+                        <div className="mb-6 md:mb-10">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className={`inline-flex items-center px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-bold tracking-wide ${
                                     product.stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                 }`}>
                                     <span className={`w-2 h-2 rounded-full mr-2 ${product.stock > 0 ? 'bg-green-500' : 'bg-red-500'}`}></span>
                                     {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
                                 </span>
                                 {product.stock > 0 && product.stock <= 5 && (
-                                    <span className="text-sm font-semibold text-orange-500 ml-3">
+                                    <span className="text-xs md:text-sm font-semibold text-orange-500">
                                         Only {product.stock} left!
                                     </span>
                                 )}
@@ -206,21 +206,21 @@ export default function ProductPage() {
                         </div>
 
                         {/* Actions */}
-                        <div className="flex flex-col sm:flex-row items-center gap-4 border-t border-gray-100 pt-8 mt-auto">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4 border-t border-gray-100 pt-6 md:pt-8 mt-auto">
                             {/* Quantity Selector */}
-                            <div className="flex items-center border border-gray-200 bg-gray-50 rounded-full h-14 w-full sm:w-auto shadow-inner">
+                            <div className="flex items-center justify-center border border-gray-200 bg-gray-50 rounded-full h-12 md:h-14 w-full sm:w-auto shadow-inner">
                                 <button 
                                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                    className="px-5 text-gray-500 hover:text-black transition-colors"
+                                    className="px-4 md:px-5 text-gray-500 hover:text-black transition-colors"
                                 >
-                                    <Minus className="w-5 h-5" />
+                                    <Minus className="w-4 h-4 md:w-5 md:h-5" />
                                 </button>
-                                <span className="w-12 text-center font-bold text-lg text-gray-900 select-none">{quantity}</span>
+                                <span className="w-10 md:w-12 text-center font-bold text-base md:text-lg text-gray-900 select-none">{quantity}</span>
                                 <button 
                                     onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))}
-                                    className="px-5 text-gray-500 hover:text-black transition-colors"
+                                    className="px-4 md:px-5 text-gray-500 hover:text-black transition-colors"
                                 >
-                                    <Plus className="w-5 h-5" />
+                                    <Plus className="w-4 h-4 md:w-5 md:h-5" />
                                 </button>
                             </div>
 
@@ -228,20 +228,20 @@ export default function ProductPage() {
                             <button 
                                 onClick={handleAddToCart}
                                 disabled={product.stock <= 0 || isCartLoading}
-                                className="flex-1 h-14 bg-black text-white font-bold rounded-full flex items-center justify-center space-x-3 hover:bg-gray-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-gray-300 w-full"
+                                className="flex-1 h-12 md:h-14 bg-black text-white text-sm md:text-base font-bold rounded-full flex items-center justify-center space-x-2 md:space-x-3 hover:bg-gray-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-gray-300 w-full"
                             >
-                                <ShoppingCart className="w-5 h-5" />
+                                <ShoppingCart className="w-4 h-4 md:w-5 md:h-5" />
                                 <span>{isCartLoading ? 'Adding...' : 'Add to Cart'}</span>
                             </button>
 
                             {/* Wishlist Toggle */}
                             <button 
                                 onClick={() => setIsWishlist(!isWishlist)}
-                                className={`flex-shrink-0 h-14 w-14 rounded-full border-2 flex items-center justify-center transition-all shadow-sm ${
+                                className={`flex-shrink-0 h-12 md:h-14 w-12 md:w-14 rounded-full border-2 flex items-center justify-center transition-all shadow-sm ${
                                     isWishlist ? 'border-red-500 bg-red-50 text-red-500' : 'border-gray-200 bg-white text-gray-400 hover:border-gray-300 hover:text-gray-600'
                                 }`}
                             >
-                                <Heart className={`w-6 h-6 ${isWishlist ? 'fill-red-500' : ''}`} />
+                                <Heart className={`w-5 h-5 md:w-6 md:h-6 ${isWishlist ? 'fill-red-500' : ''}`} />
                             </button>
                         </div>
 

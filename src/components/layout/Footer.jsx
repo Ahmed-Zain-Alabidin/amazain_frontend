@@ -3,21 +3,21 @@ import { CreditCard } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-50 pt-16 pb-8 border-t border-gray-100">
+    <footer className="bg-gray-50 pt-12 md:pt-16 pb-6 md:pb-8 border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Content - 4 Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16">
           
           {/* Column 1: Brand & Social */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-1 flex flex-col">
-            <Link href="/" className="text-2xl font-extrabold tracking-tighter text-gray-900 mb-4 inline-block">
+          <div className="col-span-1 sm:col-span-2 lg:col-span-1 flex flex-col">
+            <Link href="/" className="text-xl md:text-2xl font-extrabold tracking-tighter text-gray-900 mb-3 md:mb-4 inline-block">
               Amazain<span className="text-blue-600">.</span>
             </Link>
-            <p className="text-gray-600 text-sm leading-relaxed mb-6">
+            <p className="text-gray-600 text-sm leading-relaxed mb-4 md:mb-6">
               Curating premium, high-quality essentials designed to elevate your modern lifestyle.
             </p>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3 md:space-x-4">
               <a href="#" className="text-gray-400 hover:text-black transition-colors p-2 hover:bg-gray-200 rounded-full">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -40,8 +40,8 @@ export default function Footer() {
 
           {/* Column 2: Shop */}
           <div className="col-span-1">
-            <h3 className="text-sm font-bold tracking-wider text-gray-900 uppercase mb-4">Shop</h3>
-            <ul className="space-y-3">
+            <h3 className="text-xs md:text-sm font-bold tracking-wider text-gray-900 uppercase mb-3 md:mb-4">Shop</h3>
+            <ul className="space-y-2 md:space-y-3">
               <li><Link href="/shop" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">All Products</Link></li>
               <li><Link href="/shop?filter=featured" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Featured</Link></li>
               <li><Link href="/shop?filter=new" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">New Arrivals</Link></li>
@@ -51,8 +51,8 @@ export default function Footer() {
 
           {/* Column 3: Support */}
           <div className="col-span-1">
-            <h3 className="text-sm font-bold tracking-wider text-gray-900 uppercase mb-4">Support</h3>
-            <ul className="space-y-3">
+            <h3 className="text-xs md:text-sm font-bold tracking-wider text-gray-900 uppercase mb-3 md:mb-4">Support</h3>
+            <ul className="space-y-2 md:space-y-3">
               <li><Link href="/tracking" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Order Tracking</Link></li>
               <li><Link href="/shipping" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Shipping Policy</Link></li>
               <li><Link href="/returns" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Returns</Link></li>
@@ -62,8 +62,8 @@ export default function Footer() {
 
           {/* Column 4: Company */}
           <div className="col-span-1">
-            <h3 className="text-sm font-bold tracking-wider text-gray-900 uppercase mb-4">Company</h3>
-            <ul className="space-y-3">
+            <h3 className="text-xs md:text-sm font-bold tracking-wider text-gray-900 uppercase mb-3 md:mb-4">Company</h3>
+            <ul className="space-y-2 md:space-y-3">
               <li><Link href="/about" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">About Us</Link></li>
               <li><Link href="/contact" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Contact Us</Link></li>
               <li><Link href="/privacy" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Privacy Policy</Link></li>
@@ -73,18 +73,18 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <p className="text-sm font-medium text-gray-500">
+        <div className="pt-6 md:pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <p className="text-xs md:text-sm font-medium text-gray-500 text-center md:text-left">
             &copy; {new Date().getFullYear()} Amazain. All rights reserved.
           </p>
           
           {/* Payment Methods Placeholder */}
-          <div className="flex items-center space-x-3 text-gray-400">
-             <span className="text-xs font-bold tracking-widest text-gray-400 uppercase mr-2">Secure Checkout</span>
-             <CreditCard className="w-5 h-5" />
-             <div className="px-2 py-1 bg-white border border-gray-200 rounded text-[10px] font-extrabold text-gray-600 tracking-wider">VISA</div>
-             <div className="px-2 py-1 bg-white border border-gray-200 rounded text-[10px] font-extrabold text-gray-600 tracking-wider">MC</div>
-             <div className="px-2 py-1 bg-white border border-gray-200 rounded text-[10px] font-extrabold text-gray-600 tracking-wider">PAYPAL</div>
+          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 text-gray-400">
+             <span className="text-[10px] md:text-xs font-bold tracking-widest text-gray-400 uppercase">Secure Checkout</span>
+             <CreditCard className="w-4 h-4 md:w-5 md:h-5" />
+             <div className="px-1.5 md:px-2 py-0.5 md:py-1 bg-white border border-gray-200 rounded text-[9px] md:text-[10px] font-extrabold text-gray-600 tracking-wider">VISA</div>
+             <div className="px-1.5 md:px-2 py-0.5 md:py-1 bg-white border border-gray-200 rounded text-[9px] md:text-[10px] font-extrabold text-gray-600 tracking-wider">MC</div>
+             <div className="px-1.5 md:px-2 py-0.5 md:py-1 bg-white border border-gray-200 rounded text-[9px] md:text-[10px] font-extrabold text-gray-600 tracking-wider">PAYPAL</div>
           </div>
         </div>
 

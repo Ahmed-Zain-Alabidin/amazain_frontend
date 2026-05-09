@@ -1,0 +1,453 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/layout/Footer';
+import ProductCard from '@/components/ProductCard';
+import {
+    Search, SlidersHorizontal, ChevronLeft, ChevronRight,
+    ChevronDown, X, Package,
+} from 'lucide-react';
+import axios from 'axios';
+
+function FilterSection({ title, children, defaultOpen = true }) {
+    const [open, setOpen] = useState(defaultOpen);
+    return (
+        <div className="border-b border-gray-100 last:border-0">
+            <button
+                onClick={() => setOpen(o => !o)}
+                className="w-full flex items-center justify-between py-4 text-left group"
+            >
+                <span className="text-xs font-bold tracking-[0.12em] uppercase text-gray-500 group-hover:text-gray-900 transition-colors">
+                    {title}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+            </button>
+            <div className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-96 pb-4' : 'max-h-0'}`}>
+                {children}
+            </div>
+        </div>
+    );
+}
+
+function SkeletonCard() {
+    return (
+        <div className="bg-gray-50 rounded-3xl overflow-hidden animate-pulse">
+            <div className="m-2 aspect-[4/5] bg-gray-200 rounded-2xl" />
+            <div className="px-4 pt-3 pb-4 space-y-2">
+                <div className="h-2.5 bg-gray-200 rounded w-1/4" />
+                <div className="h-4 bg-gray-200 rounded w-3/4" />
+                <div className="h-5 bg-gray-200 rounded w-1/3 mt-2" />
+            </div>
+        </div>
+    );
+}
+
+export default function ShopPage() {
+    const [products, setProducts] = useState([]);
+    const [pagination, setPagination] = useState({ total: 0, page: 1, pages: 1 });
+    const [isLoading, setIsLoading] = useState(true);
+    const [categories, setCategories] = useState([]);
+    const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+    const [search, setSearch] = useState('');
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [priceRange, setPriceRange] = useState([0, 1000]);
+    const [inStockOnly, setInStockOnly] = useState(false);
+    const [sort, setSort] = useState('newest');
+    const [page, setPage] = useState(1);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const categoryParam = params.get('category');
+            if (categoryParam) {
+                setSelectedCategories([categoryParam]);
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        axios.get('http://localhost:4500/api/categories')
+            .then(res => setCategories(res.data.data || []))
+            .catch(() => {});
+    }, []);
+
+    const fetchProducts = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const params = new URLSearchParams();
+            if (search) params.append('name', search);
+            if (selectedCategories.length > 0) {
+                selectedCategories.forEach(catId => params.append('category', catId));
+            }
+            if (priceRange[0] > 0) params.append('minPrice', priceRange[0]);
+            if (priceRange[1] < 1000) params.append('maxPrice', priceRange[1]);
+            params.append('sort', sort);
+            params.append('page', page);
+            params.append('limit', 8);
+
+            const res = await axios.get(`http://localhost:4500/api/products?${params}`);
+            let data = res.data.data || [];
+            
+            if (inStockOnly) {
+                data = data.filter(p => p.stock > 0);
+            }
+            
+            setProducts(data);
+            if (res.data.pagination) setPagination(res.data.pagination);
+        } catch {
+            setProducts([]);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [search, selectedCategories, priceRange, inStockOnly, sort, page]);
+
+    useEffect(() => {
+        const t = setTimeout(fetchProducts, search ? 350 : 0);
+        return () => clearTimeout(t);
+    }, [fetchProducts, search]);
+
+    const resetFilters = () => {
+        setSearch('');
+        setSelectedCategories([]);
+        setPriceRange([0, 1000]);
+        setInStockOnly(false);
+        setSort('newest');
+        setPage(1);
+    };
+
+    const activeFilterCount = [search].filter(Boolean).length + 
+        selectedCategories.length + 
+        (priceRange[0] > 0 || priceRange[1] < 1000 ? 1 : 0) +
+        (inStockOnly ? 1 : 0) + 
+        (sort !== 'newest' ? 1 : 0);
+
+    const toggleCategory = (catId) => {
+        setSelectedCategories(prev => {
+            if (prev.includes(catId)) {
+                return prev.filter(id => id !== catId);
+            } else {
+                return [...prev, catId];
+            }
+        });
+        setPage(1);
+    };
+
+    const SidebarFilters = () => (
+        <div className="space-y-0">
+            <FilterSection title="Search" defaultOpen={true}>
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                    <input
+                        type="text"
+                        placeholder="Find something..."
+                        value={search}
+                        onChange={e => { setSearch(e.target.value); setPage(1); }}
+                        className="w-full pl-9 pr-4 py-2.5 bg-gray-50 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                    />
+                </div>
+            </FilterSection>
+
+            <FilterSection title="Sort By" defaultOpen={true}>
+                <div className="space-y-1">
+                    {[
+                        { value: 'newest', label: 'Newest Arrivals' },
+                        { value: 'price', label: 'Price: Low → High' },
+                        { value: '-price', label: 'Price: High → Low' },
+                        { value: 'rating', label: 'Highest Rated' },
+                    ].map(opt => (
+                        <button
+                            key={opt.value}
+                            onClick={() => { setSort(opt.value); setPage(1); }}
+                            className={`w-full text-left px-3 py-2 rounded-xl text-sm font-medium transition-all ${sort === opt.value ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}`}
+                        >
+                            {opt.label}
+                        </button>
+                    ))}
+                </div>
+            </FilterSection>
+
+            <FilterSection title="Categories" defaultOpen={true}>
+                <div className="space-y-2">
+                    {categories.map(cat => {
+                        const isSelected = selectedCategories.includes(cat._id);
+                        return (
+                            <label
+                                key={cat._id}
+                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors group"
+                            >
+                                <div className="relative flex items-center justify-center">
+                                    <input
+                                        type="checkbox"
+                                        checked={isSelected}
+                                        onChange={() => toggleCategory(cat._id)}
+                                        className="w-4 h-4 rounded border-2 border-gray-300 text-black focus:ring-2 focus:ring-black focus:ring-offset-0 cursor-pointer transition-all"
+                                    />
+                                </div>
+                                <span className={`text-sm font-medium flex-1 transition-colors ${isSelected ? 'text-gray-900 font-semibold' : 'text-gray-600 group-hover:text-gray-900'}`}>
+                                    {cat.name}
+                                </span>
+                                {isSelected && (
+                                    <span className="text-xs font-bold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                                        ✓
+                                    </span>
+                                )}
+                            </label>
+                        );
+                    })}
+                    {categories.length === 0 && (
+                        <p className="text-xs text-gray-400 px-3 py-2">No categories available</p>
+                    )}
+                </div>
+                {selectedCategories.length > 0 && (
+                    <button
+                        onClick={() => { setSelectedCategories([]); setPage(1); }}
+                        className="mt-3 w-full text-xs font-semibold text-gray-500 hover:text-gray-900 py-2 border border-gray-200 rounded-lg hover:border-gray-300 transition-all"
+                    >
+                        Clear categories ({selectedCategories.length})
+                    </button>
+                )}
+            </FilterSection>
+
+            <FilterSection title="Price Range" defaultOpen={false}>
+                <div className="px-1">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="text-sm font-bold text-gray-900">${priceRange[0]}</div>
+                        <div className="text-xs text-gray-400 font-medium">to</div>
+                        <div className="text-sm font-bold text-gray-900">${priceRange[1]}</div>
+                    </div>
+
+                    <div className="relative h-2 mb-6">
+                        <div className="absolute w-full h-2 bg-gray-200 rounded-full" />
+                        <div 
+                            className="absolute h-2 bg-black rounded-full"
+                            style={{
+                                left: `${(priceRange[0] / 1000) * 100}%`,
+                                right: `${100 - (priceRange[1] / 1000) * 100}%`
+                            }}
+                        />
+                        <input
+                            type="range"
+                            min="0"
+                            max="1000"
+                            step="10"
+                            value={priceRange[0]}
+                            onChange={(e) => {
+                                const newMin = Math.min(Number(e.target.value), priceRange[1] - 10);
+                                setPriceRange([newMin, priceRange[1]]);
+                                setPage(1);
+                            }}
+                            className="absolute w-full h-2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-black [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:transition-transform"
+                        />
+                        <input
+                            type="range"
+                            min="0"
+                            max="1000"
+                            step="10"
+                            value={priceRange[1]}
+                            onChange={(e) => {
+                                const newMax = Math.max(Number(e.target.value), priceRange[0] + 10);
+                                setPriceRange([priceRange[0], newMax]);
+                                setPage(1);
+                            }}
+                            className="absolute w-full h-2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-black [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:transition-transform"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                        {[
+                            { label: 'Under $50', range: [0, 50] },
+                            { label: '$50-$200', range: [50, 200] },
+                            { label: '$200+', range: [200, 1000] },
+                        ].map((preset) => (
+                            <button
+                                key={preset.label}
+                                onClick={() => { setPriceRange(preset.range); setPage(1); }}
+                                className={`px-2 py-1.5 text-xs font-medium rounded-lg transition-all ${priceRange[0] === preset.range[0] && priceRange[1] === preset.range[1] ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                            >
+                                {preset.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {(priceRange[0] > 0 || priceRange[1] < 1000) && (
+                        <button
+                            onClick={() => { setPriceRange([0, 1000]); setPage(1); }}
+                            className="mt-3 w-full text-xs font-semibold text-gray-500 hover:text-gray-900 py-2 border border-gray-200 rounded-lg hover:border-gray-300 transition-all"
+                        >
+                            Reset price range
+                        </button>
+                    )}
+                </div>
+            </FilterSection>
+
+            <FilterSection title="Availability" defaultOpen={false}>
+                <label className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors group">
+                    <input
+                        type="checkbox"
+                        checked={inStockOnly}
+                        onChange={(e) => { setInStockOnly(e.target.checked); setPage(1); }}
+                        className="w-4 h-4 rounded border-2 border-gray-300 text-black focus:ring-2 focus:ring-black focus:ring-offset-0 cursor-pointer transition-all"
+                    />
+                    <span className={`text-sm font-medium flex-1 transition-colors ${inStockOnly ? 'text-gray-900 font-semibold' : 'text-gray-600 group-hover:text-gray-900'}`}>
+                        In Stock Only
+                    </span>
+                    {inStockOnly && (
+                        <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
+                            ✓
+                        </span>
+                    )}
+                </label>
+            </FilterSection>
+
+            {activeFilterCount > 0 && (
+                <div className="pt-4">
+                    <button
+                        onClick={resetFilters}
+                        className="w-full py-2.5 text-xs font-bold text-gray-500 hover:text-gray-900 border border-gray-200 rounded-xl hover:border-gray-400 transition-all"
+                    >
+                        Clear all filters ({activeFilterCount})
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+
+    return (
+        <div className="min-h-screen bg-[#fafafa] flex flex-col font-sans">
+            <Navbar />
+
+            <div className="bg-white border-b border-gray-100">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 lg:py-14">
+                    <nav className="flex items-center gap-2 text-xs font-medium text-gray-400 mb-3 md:mb-4">
+                        <Link href="/" className="hover:text-gray-700 transition-colors">Home</Link>
+                        <span>/</span>
+                        <span className="text-gray-700">Shop</span>
+                    </nav>
+
+                    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 md:gap-4">
+                        <div>
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-none">
+                                Shop All
+                            </h1>
+                            <p className="mt-2 md:mt-2.5 text-gray-400 text-sm font-medium">
+                                {isLoading ? 'Loading collection...' : `${pagination.total || products.length} products`}
+                            </p>
+                        </div>
+
+                        <button
+                            onClick={() => setIsMobileFilterOpen(true)}
+                            className="lg:hidden inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-bold rounded-xl hover:bg-gray-700 transition-colors self-start sm:self-auto"
+                        >
+                            <SlidersHorizontal className="w-4 h-4" />
+                            Filters
+                            {activeFilterCount > 0 && (
+                                <span className="bg-white text-gray-900 text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center">
+                                    {activeFilterCount}
+                                </span>
+                            )}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 w-full">
+                <div className="flex gap-6 lg:gap-8">
+                    <aside className="hidden lg:block w-56 flex-shrink-0">
+                        <div className="sticky top-24 bg-white rounded-2xl border border-gray-100 px-5 py-2 shadow-sm">
+                            <SidebarFilters />
+                        </div>
+                    </aside>
+
+                    {isMobileFilterOpen && (
+                        <div className="fixed inset-0 z-50 lg:hidden">
+                            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsMobileFilterOpen(false)} />
+                            <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-white shadow-2xl flex flex-col">
+                                <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                                    <span className="font-extrabold text-gray-900">Filters</span>
+                                    <button onClick={() => setIsMobileFilterOpen(false)} className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors">
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto px-5 py-2">
+                                    <SidebarFilters />
+                                </div>
+                                <div className="px-5 py-4 border-t border-gray-100">
+                                    <button onClick={() => setIsMobileFilterOpen(false)} className="w-full bg-black text-white py-3.5 rounded-full font-bold hover:bg-gray-800 transition-colors">
+                                        View Results
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="flex-1 min-w-0">
+                        {isLoading ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 md:gap-5">
+                                {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
+                            </div>
+                        ) : products.length > 0 ? (
+                            <>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 md:gap-5">
+                                    {products.map(product => (
+                                        <ProductCard key={product._id} product={product} />
+                                    ))}
+                                </div>
+
+                                {pagination.pages > 1 && (
+                                    <div className="mt-10 md:mt-14 flex justify-center items-center gap-2">
+                                        <button
+                                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                                            disabled={page === 1}
+                                            className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                        >
+                                            <ChevronLeft className="w-4 h-4" />
+                                        </button>
+
+                                        {[...Array(pagination.pages)].map((_, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => setPage(i + 1)}
+                                                className={`w-9 h-9 md:w-10 md:h-10 rounded-full text-sm font-bold transition-all ${page === i + 1 ? 'bg-gray-900 text-white shadow-md' : 'text-gray-500 hover:bg-gray-100'}`}
+                                            >
+                                                {i + 1}
+                                            </button>
+                                        ))}
+
+                                        <button
+                                            onClick={() => setPage(p => Math.min(pagination.pages, p + 1))}
+                                            disabled={page === pagination.pages}
+                                            className="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                        >
+                                            <ChevronRight className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center py-20 md:py-28 text-center px-4">
+                                <div className="w-14 h-14 md:w-16 md:h-16 bg-gray-100 rounded-2xl flex items-center justify-center mb-4 md:mb-5">
+                                    <Package className="w-6 h-6 md:w-7 md:h-7 text-gray-300" />
+                                </div>
+                                <h3 className="text-lg md:text-xl font-extrabold text-gray-900 mb-2">No products found</h3>
+                                <p className="text-gray-400 text-sm max-w-xs mb-5 md:mb-6">
+                                    Nothing matches your current filters. Try broadening your search.
+                                </p>
+                                <button
+                                    onClick={resetFilters}
+                                    className="px-6 md:px-7 py-2.5 md:py-3 bg-black text-white text-sm font-bold rounded-full hover:bg-gray-800 transition-colors shadow-md"
+                                >
+                                    Reset Filters
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <Footer />
+        </div>
+    );
+}

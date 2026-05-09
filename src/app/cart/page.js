@@ -52,10 +52,10 @@ export default function CartPage() {
                         </Link>
                     </div>
                 ) : (
-                    <div className="flex flex-col lg:flex-row gap-10">
+                    <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
                         {/* Cart Items List */}
                         <div className="w-full lg:w-2/3">
-                            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+                            <div className="bg-white rounded-2xl lg:rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
                                 {/* Table Header - Desktop Only */}
                                 <div className="hidden md:grid grid-cols-12 gap-4 p-6 border-b border-gray-100 bg-gray-50/50">
                                     <div className="col-span-6 text-sm font-bold text-gray-500 uppercase tracking-wider">Product</div>
@@ -88,24 +88,51 @@ export default function CartPage() {
                                         }
 
                                         return (
-                                            <div key={itemKey} className="p-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                                            <div key={itemKey} className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 items-center">
                                                 {/* Product Info */}
-                                                <div className="col-span-1 md:col-span-6 flex items-center space-x-4">
+                                                <div className="col-span-1 md:col-span-6 flex items-start md:items-center space-x-3 md:space-x-4">
                                                     <Link href={`/product/${productId}`} className="flex-shrink-0">
-                                                        <div className="w-24 h-24 bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
+                                                        <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
                                                             <img src={image} alt={name} className="w-full h-full object-cover object-center" />
                                                         </div>
                                                     </Link>
-                                                    <div className="flex flex-col">
-                                                        <Link href={`/product/${productId}`} className="font-bold text-lg text-gray-900 hover:text-blue-600 transition-colors line-clamp-2">
+                                                    <div className="flex flex-col flex-1 min-w-0">
+                                                        <Link href={`/product/${productId}`} className="font-bold text-base md:text-lg text-gray-900 hover:text-blue-600 transition-colors line-clamp-2">
                                                             {name}
                                                         </Link>
-                                                        <p className="text-sm text-gray-500 mt-1 md:hidden">{currencySymbol}{currencySymbol === 'EGP' ? ' ' : ''}{price.toFixed(2)}</p>
+                                                        <p className="text-sm font-semibold text-gray-700 mt-1 md:hidden">{currencySymbol}{currencySymbol === 'EGP' ? ' ' : ''}{price.toFixed(2)}</p>
+                                                        
+                                                        {/* Mobile: Quantity and Total */}
+                                                        <div className="flex items-center justify-between mt-3 md:hidden">
+                                                            <div className="flex items-center border border-gray-200 rounded-full h-9 bg-gray-50">
+                                                                <button 
+                                                                    onClick={() => updateQuantity(productId, item.quantity - 1)}
+                                                                    className="px-2.5 text-gray-500 hover:text-black transition-colors"
+                                                                    disabled={isLoading || item.quantity <= 1}
+                                                                >
+                                                                    <Minus className="w-3.5 h-3.5" />
+                                                                </button>
+                                                                <span className="w-8 text-center font-bold text-sm text-gray-900 select-none">
+                                                                    {item.quantity}
+                                                                </span>
+                                                                <button 
+                                                                    onClick={() => updateQuantity(productId, item.quantity + 1)}
+                                                                    className="px-2.5 text-gray-500 hover:text-black transition-colors"
+                                                                    disabled={isLoading}
+                                                                >
+                                                                    <Plus className="w-3.5 h-3.5" />
+                                                                </button>
+                                                            </div>
+                                                            <p className="font-extrabold text-gray-900">
+                                                                {currencySymbol}{currencySymbol === 'EGP' ? ' ' : ''}{(price * item.quantity).toFixed(2)}
+                                                            </p>
+                                                        </div>
+                                                        
                                                         <button 
                                                             onClick={() => removeFromCart(productId)}
-                                                            className="text-red-500 text-sm font-medium hover:text-red-600 transition-colors flex items-center mt-2 w-fit"
+                                                            className="text-red-500 text-xs md:text-sm font-medium hover:text-red-600 transition-colors flex items-center mt-2 w-fit"
                                                         >
-                                                            <Trash2 className="w-4 h-4 mr-1" /> Remove
+                                                            <Trash2 className="w-3.5 h-3.5 md:w-4 md:h-4 mr-1" /> Remove
                                                         </button>
                                                     </div>
                                                 </div>
@@ -115,8 +142,8 @@ export default function CartPage() {
                                                     {currencySymbol}{currencySymbol === 'EGP' ? ' ' : ''}{price.toFixed(2)}
                                                 </div>
 
-                                                {/* Quantity */}
-                                                <div className="col-span-1 md:col-span-2 flex justify-start md:justify-center">
+                                                {/* Quantity (Desktop) */}
+                                                <div className="hidden md:flex col-span-2 justify-center">
                                                     <div className="flex items-center border border-gray-200 rounded-full h-10 bg-gray-50">
                                                         <button 
                                                             onClick={() => updateQuantity(productId, item.quantity - 1)}
@@ -138,7 +165,7 @@ export default function CartPage() {
                                                     </div>
                                                 </div>
 
-                                                {/* Subtotal */}
+                                                {/* Subtotal (Desktop) */}
                                                 <div className="hidden md:block col-span-2 text-right font-extrabold text-gray-900">
                                                     {currencySymbol}{currencySymbol === 'EGP' ? ' ' : ''}{(price * item.quantity).toFixed(2)}
                                                 </div>
@@ -148,7 +175,7 @@ export default function CartPage() {
                                 </div>
                                 
                                 {/* Clear Cart */}
-                                <div className="p-6 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
+                                <div className="p-4 md:p-6 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
                                     <Link href="/shop" className="text-sm font-bold text-gray-600 hover:text-black transition-colors">
                                         &larr; Continue Shopping
                                     </Link>
@@ -164,8 +191,8 @@ export default function CartPage() {
 
                         {/* Order Summary Sidebar */}
                         <div className="w-full lg:w-1/3">
-                            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 sticky top-24">
-                                <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+                            <div className="bg-white rounded-2xl lg:rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 lg:sticky lg:top-24">
+                                <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
                                 
                                 <div className="space-y-4 mb-6 text-sm">
                                     <div className="flex justify-between text-gray-600">
@@ -196,8 +223,8 @@ export default function CartPage() {
                                     )}
                                 </div>
 
-                                <Link href="/checkout" className="w-full bg-black text-white font-bold py-4 rounded-full hover:bg-gray-800 transition-all shadow-md flex justify-center items-center">
-                                    Proceed to Checkout <ArrowRight className="w-5 h-5 ml-2" />
+                                <Link href="/checkout" className="w-full bg-black text-white font-bold py-3.5 md:py-4 rounded-full hover:bg-gray-800 transition-all shadow-md flex justify-center items-center text-sm md:text-base">
+                                    Proceed to Checkout <ArrowRight className="w-4 h-4 md:w-5 md:h-5 ml-2" />
                                 </Link>
                                 
                                 <div className="mt-4 text-center">
