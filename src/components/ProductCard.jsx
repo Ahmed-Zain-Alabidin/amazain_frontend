@@ -96,9 +96,9 @@ export default function ProductCard({ product, showRemove = false, onRemove }) {
                         <button
                             onClick={handleWishlist}
                             aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-                            className={`absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm shadow-sm transition-all duration-200 ${isWishlisted ? 'bg-white text-red-500 scale-110 opacity-100' : 'bg-white/70 text-gray-400 opacity-0 group-hover:opacity-100 hover:text-red-500 hover:scale-110'} ${showRemove ? 'opacity-100' : ''}`}
+                            className={`absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm shadow-sm transition-all duration-200 ${isWishlisted ? 'bg-white text-[#155dfc] scale-110 opacity-100' : 'bg-white/70 text-gray-400 opacity-0 group-hover:opacity-100 hover:text-[#155dfc] hover:scale-110'} ${showRemove ? 'opacity-100' : ''}`}
                         >
-                            <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-red-500' : ''}`} />
+                            <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-[#155dfc]' : ''}`} />
                         </button>
 
                         {/* Quick Add */}

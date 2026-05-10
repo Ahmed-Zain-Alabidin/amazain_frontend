@@ -25,9 +25,9 @@ export default function CartPage() {
     const total = subtotal + shipping;
     
     // Determine currency - use first item's currency or default to USD
-    const firstItem = items[0];
+    const firstItem = items.length > 0 ? items[0] : null;
     const firstProduct = firstItem ? (typeof firstItem.product === 'object' ? firstItem.product : {}) : {};
-    const displayCurrency = firstItem?.currency || firstProduct.currency || 'USD';
+    const displayCurrency = firstItem?.currency || firstProduct?.currency || 'USD';
     const displayCurrencySymbol = displayCurrency === 'EGP' ? 'EGP' : '$';
 
     if (!mounted) return null; // Hydration fix
@@ -67,23 +67,33 @@ export default function CartPage() {
                                 {/* Cart Items */}
                                 <div className="divide-y divide-gray-100">
                                     {items.map((item, index) => {
+                                        // Skip invalid items
+                                        if (!item || !item.product) {
+                                            return null;
+                                        }
+                                        
                                         // Handle both populated product objects and string product IDs
                                         const product = typeof item.product === 'object' ? item.product : {};
-                                        const productId = typeof item.product === 'string' ? item.product : product._id;
+                                        const productId = typeof item.product === 'string' ? item.product : (product?._id || null);
+                                        
+                                        // Skip if we can't determine product ID
+                                        if (!productId) {
+                                            return null;
+                                        }
                                         
                                         // Always use a unique key combining productId and index to prevent duplicates
-                                        const itemKey = productId ? `${productId}-${index}` : `cart-item-${index}`;
+                                        const itemKey = `${productId}-${index}`;
                                         
-                                        const name = product.name || 'Unknown Product';
+                                        const name = product?.name || 'Unknown Product';
                                         // item.price = price locked at add-time (from server); fallback to product.price for guest cart
-                                        const price = item.price || product.price || 0;
-                                        const currency = item.currency || product.currency || 'USD';
+                                        const price = item.price || product?.price || 0;
+                                        const currency = item.currency || product?.currency || 'USD';
                                         const currencySymbol = currency === 'EGP' ? 'EGP' : '$';
                                         
                                         // Get the first image from the product images array
                                         // Handle both array of strings and potential undefined/null
                                         let image = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=200&auto=format&fit=crop';
-                                        if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+                                        if (product?.images && Array.isArray(product.images) && product.images.length > 0) {
                                             image = product.images[0];
                                         }
 

@@ -35,7 +35,7 @@ export default function DashboardPage() {
 
     const cards = [
         { label: 'Total Products', value: stats.products, icon: Package, href: '/dashboard/products', color: 'bg-blue-50 text-blue-600' },
-        { label: 'Manage Products', value: 'Add / Edit', icon: TrendingUp, href: '/dashboard/products/add', color: 'bg-green-50 text-green-600' },
+        { label: 'Manage Products', value: 'Add', icon: TrendingUp, href: '/dashboard/products/add', color: 'bg-green-50 text-green-600' },
         { label: 'Orders', value: 'View All', icon: ShoppingBag, href: '/dashboard/orders', color: 'bg-purple-50 text-purple-600' },
     ];
 

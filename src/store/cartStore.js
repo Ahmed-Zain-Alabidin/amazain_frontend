@@ -89,9 +89,11 @@ export const useCartStore = create(
                         { productId, quantity },
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
-                    // Server returns { data: { items: [...] } }
-                    set({ items: res.data.data?.items || [], isLoading: false });
+                    // Server returns { status: 'Success', data: { user, items: [...], totalPrice } }
+                    const cartData = res.data.data;
+                    set({ items: cartData?.items || [], isLoading: false });
                 } catch (error) {
+                    console.error('Add to cart error:', error);
                     set({
                         error: error.response?.data?.message || 'Failed to add to cart',
                         isLoading: false,
@@ -117,8 +119,10 @@ export const useCartStore = create(
                         `http://localhost:4500/api/cart/${productId}`,
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
-                    set({ items: res.data.data?.items || [], isLoading: false });
+                    const cartData = res.data.data;
+                    set({ items: cartData?.items || [], isLoading: false });
                 } catch (error) {
+                    console.error('Remove from cart error:', error);
                     set({ error: 'Failed to remove item', isLoading: false });
                 }
             },
@@ -145,8 +149,10 @@ export const useCartStore = create(
                         { quantity },
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
-                    set({ items: res.data.data?.items || [], isLoading: false });
+                    const cartData = res.data.data;
+                    set({ items: cartData?.items || [], isLoading: false });
                 } catch (error) {
+                    console.error('Update quantity error:', error);
                     set({ error: 'Failed to update quantity', isLoading: false });
                 }
             },

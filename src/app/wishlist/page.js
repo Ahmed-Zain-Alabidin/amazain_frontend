@@ -13,6 +13,7 @@ import Toast from '@/components/Toast';
 export default function WishlistPage() {
     const [mounted, setMounted] = useState(false);
     const [toast, setToast] = useState(null);
+    const [showClearModal, setShowClearModal] = useState(false);
     
     const items = useWishlistStore(state => state.items);
     const removeFromWishlist = useWishlistStore(state => state.removeFromWishlist);
@@ -36,10 +37,13 @@ export default function WishlistPage() {
     };
 
     const handleClearAll = () => {
-        if (window.confirm('Are you sure you want to clear your entire wishlist?')) {
-            clearWishlist();
-            setToast({ message: 'Wishlist cleared', type: 'info' });
-        }
+        setShowClearModal(true);
+    };
+
+    const confirmClearAll = () => {
+        clearWishlist();
+        setShowClearModal(false);
+        setToast({ message: 'Wishlist cleared', type: 'info' });
     };
 
     const handleAddAllToCart = async () => {
@@ -83,8 +87,8 @@ export default function WishlistPage() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-10">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center">
-                            <Heart className="w-6 h-6 text-red-500 fill-red-500" />
+                        <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center">
+                            <Heart className="w-6 h-6 text-[#155dfc] fill-[#155dfc]" />
                         </div>
                         <div>
                             <h1 className="text-3xl font-bold text-gray-900">My Wishlist</h1>
@@ -172,6 +176,44 @@ export default function WishlistPage() {
 
             <Footer />
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+            
+            {/* Clear Wishlist Confirmation Modal */}
+            {showClearModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 animate-in zoom-in-95 duration-200">
+                        {/* Icon */}
+                        <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <Trash2 className="w-8 h-8 text-red-500" />
+                        </div>
+                        
+                        {/* Title */}
+                        <h3 className="text-2xl font-bold text-gray-900 text-center mb-3">
+                            Clear Wishlist?
+                        </h3>
+                        
+                        {/* Description */}
+                        <p className="text-gray-500 text-center mb-8">
+                            Are you sure you want to remove all {items.length} {items.length === 1 ? 'item' : 'items'} from your wishlist? This action cannot be undone.
+                        </p>
+                        
+                        {/* Actions */}
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowClearModal(false)}
+                                className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-full hover:bg-gray-200 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmClearAll}
+                                className="flex-1 px-6 py-3 bg-red-500 text-white font-semibold rounded-full hover:bg-red-600 transition-colors shadow-lg shadow-red-500/30"
+                            >
+                                Clear All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }

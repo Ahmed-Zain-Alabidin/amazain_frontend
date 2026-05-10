@@ -43,9 +43,9 @@ export default function Footer() {
             <h3 className="text-xs md:text-sm font-bold tracking-wider text-gray-900 uppercase mb-3 md:mb-4">Shop</h3>
             <ul className="space-y-2 md:space-y-3">
               <li><Link href="/shop" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">All Products</Link></li>
-              <li><Link href="/shop?filter=featured" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Featured</Link></li>
-              <li><Link href="/shop?filter=new" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">New Arrivals</Link></li>
-              <li><Link href="/shop?filter=discounts" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Discounts</Link></li>
+              <li><Link href="/categories" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Categories</Link></li>
+              <li><Link href="/shop" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">New Arrivals</Link></li>
+              <li><Link href="/shop" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Discounts</Link></li>
             </ul>
           </div>
 
@@ -53,10 +53,10 @@ export default function Footer() {
           <div className="col-span-1">
             <h3 className="text-xs md:text-sm font-bold tracking-wider text-gray-900 uppercase mb-3 md:mb-4">Support</h3>
             <ul className="space-y-2 md:space-y-3">
-              <li><Link href="/tracking" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Order Tracking</Link></li>
-              <li><Link href="/shipping" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Shipping Policy</Link></li>
-              <li><Link href="/returns" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Returns</Link></li>
-              <li><Link href="/faqs" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">FAQs</Link></li>
+              <li><Link href="/support" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Help Center</Link></li>
+              <li><Link href="/profile/orders" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Order Tracking</Link></li>
+              <li><Link href="/support" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Shipping & Returns</Link></li>
+              <li><Link href="/support" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">FAQs</Link></li>
             </ul>
           </div>
 
@@ -65,8 +65,8 @@ export default function Footer() {
             <h3 className="text-xs md:text-sm font-bold tracking-wider text-gray-900 uppercase mb-3 md:mb-4">Company</h3>
             <ul className="space-y-2 md:space-y-3">
               <li><Link href="/about" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">About Us</Link></li>
-              <li><Link href="/contact" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Contact Us</Link></li>
-              <li><Link href="/privacy" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Privacy Policy</Link></li>
+              <li><Link href="/support" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Contact Us</Link></li>
+              <li><Link href="/" className="text-gray-500 hover:text-blue-600 transition-colors text-sm font-medium">Privacy Policy</Link></li>
             </ul>
           </div>
 

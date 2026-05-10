@@ -31,6 +31,8 @@ export default function Navbar() {
             <Link href="/" className="text-gray-600 hover:text-black transition-colors font-medium">Home</Link>
             <Link href="/shop" className="text-gray-600 hover:text-black transition-colors font-medium">Shop</Link>
             <Link href="/categories" className="text-gray-600 hover:text-black transition-colors font-medium">Categories</Link>
+            <Link href="/about" className="text-gray-600 hover:text-black transition-colors font-medium">About</Link>
+            <Link href="/support" className="text-gray-600 hover:text-black transition-colors font-medium">Support</Link>
           </div>
 
           <div className="flex items-center space-x-5">
@@ -45,10 +47,10 @@ export default function Navbar() {
             </div>
 
             {/* Wishlist */}
-            <Link href="/wishlist" className="relative text-gray-600 hover:text-red-500 transition-colors">
-              <Heart className="w-6 h-6" />
+            <Link href="/wishlist" className="relative text-gray-600 hover:text-black transition-colors">
+              <Heart className="w-6 h-6 text-[#155dfc]" />
               {mounted && wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">
+                <span className="absolute -top-1 -right-2 bg-[#155dfc] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">
                   {wishlistCount}
                 </span>
               )}
@@ -83,7 +85,7 @@ export default function Navbar() {
                           <Link href="/profile" className="block px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors">
                               My Account
                           </Link>
-                          <Link href="/orders" className="block px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                          <Link href="/profile/orders" className="block px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors">
                               My Orders
                           </Link>
                           {(user?.role === 'admin' || user?.role === 'seller') && (
@@ -133,10 +135,12 @@ export default function Navbar() {
           <Link href="/" className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors">Home</Link>
           <Link href="/shop" className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors">Shop</Link>
           <Link href="/categories" className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors">Categories</Link>
+          <Link href="/about" className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors">About</Link>
+          <Link href="/support" className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors">Support</Link>
           <Link href="/wishlist" className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors flex items-center justify-between">
             <span>Wishlist</span>
             {mounted && wishlistCount > 0 && (
-              <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+              <span className="bg-[#155dfc] text-white text-xs font-bold px-2 py-0.5 rounded-full">
                 {wishlistCount}
               </span>
             )}
@@ -156,7 +160,7 @@ export default function Navbar() {
           {mounted && isAuthenticated && (
             <div className="pt-2 pb-2 space-y-1 border-t border-gray-100 mt-2">
               <Link href="/profile" className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors">My Account</Link>
-              <Link href="/orders" className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors">My Orders</Link>
+              <Link href="/profile/orders" className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors">My Orders</Link>
               {(user?.role === 'admin' || user?.role === 'seller') && (
                 <Link
                   href={user?.role === 'admin' ? '/admin' : '/dashboard'}

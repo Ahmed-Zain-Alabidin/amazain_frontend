@@ -41,3 +41,51 @@ textarea::placeholder {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Floating animation for hero iPhone */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Slow floating animation for smartphone */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+/* Orbit animation for category words */
+@keyframes orbit {
+  0% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) rotate(0deg) translateY(-45%) rotate(0deg) scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(180deg) translateY(-45%) rotate(-180deg) scale(1.05);
+  }
+  100% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) rotate(360deg) translateY(-45%) rotate(-360deg) scale(0.95);
+  }
+}
+
+.animate-orbit {
+  animation: orbit 20s linear infinite;
+}
